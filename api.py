@@ -53,9 +53,6 @@ def tcp_connection(message: dict, host = "127.0.0.1", port = 7896):
             payload = json.dumps(message, default = json_serial).encode("utf-8")
             s.sendall(payload)
 
-            # response = s.recv(1024).decode("utf-8")
-            # print("TCP Reply:", response)
-
 
     except Exception as e:
         print(f"TCP forwarding failed: {e}")
