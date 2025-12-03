@@ -1,10 +1,9 @@
 import threading
 
 class LamportClock:
-    def __init__(self, node_id: str):
+    def __init__(self):
         self._time = 0
         self._lock = threading.Lock()
-        self.node_id = node_id
 
     def tick(self) -> int:
         with self._lock:
