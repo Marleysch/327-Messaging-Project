@@ -32,7 +32,7 @@ def main(node):
                             f"[{timestamp}] Message logged from {addr[0]}\n", flush=True
                         )
                         node.clock.update(int(LC_timestamp))
-                        print(f'LCTime: {node.clock.now()}')
+                        print(f'LCRTime: {node.clock.now()}')
             except Exception as e:
                 print(f"[ERROR] {e}", flush=True)
 

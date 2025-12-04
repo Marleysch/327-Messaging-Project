@@ -8,7 +8,6 @@ from pydantic import BaseModel
 import httpx
 
 NODE_ID = os.environ.get("NODE_ID", "1")
-IS_COORD = os.environ.get("COORD", "0") == "1"
 PEERS = [p.strip() for p in os.environ.get("PEERS", "").split(",") if p.strip()]
 WAL = Path(f"./wal_{NODE_ID}.log")
 
@@ -90,7 +89,6 @@ def get_value(key: str):
 def get_state():
     return {
         "node": NODE_ID,
-        "coord": IS_COORD,
         "store": STORE,
         "locks": LOCKS,
         "staged": STAGED,
@@ -101,8 +99,6 @@ def get_state():
 
 @app.post("/start")
 async def start_tx(req: TxStart):
-    if not IS_COORD:
-        return {"error": "not coordinator"}
 
     tx_id = req.tx_id
     TX[tx_id] = "STARTED"
@@ -133,7 +129,7 @@ async def start_tx(req: TxStart):
     endpoint = "/commit" if decision == "commit" else "/abort"
     async with httpx.AsyncClient(timeout=3.0) as client:
         await asyncio.gather(
-            *[client.post(f"{p}{endpoint}", json={"tx_id": tx_id}) for p in PEERS],
+            *[client.post(f"{p}{endpoint}", json={"tx_id": tx_id, "key": req.key, "value": req.value}) for p in PEERS],
             return_exceptions=True
         )
 

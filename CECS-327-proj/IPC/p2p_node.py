@@ -41,7 +41,8 @@ class Node:
         }
 
         # This node is the leader → it calls /start on *itself*
-        coord_url = "http://127.0.0.1:8000/start"  # adjust if your FastAPI runs elsewhere
+        coord_port = 8000 + int(self.node_id) - 1
+        coord_url = f"http://127.0.0.1:{coord_port}/start"  # adjust if your FastAPI runs elsewhere
 
         print(f"[Node {self.node_id}] Starting 2PC tx={tx_id}")
         try:
@@ -66,11 +67,11 @@ class Node:
             print(f"[Node {self.node_id}] Sending to {peer}")
             print(message,host,port)
             subprocess.run(
-                ["python3", file_path, message, host, port], check=True
+                [sys.executable, file_path, message, host, port], check=True
             )
             print(f"[Node {self.node_id}] Message sent to {peer}")
-            self.clock.tick()
-            print(f'LCtime: {self.clock.now()}')
+        self.clock.tick()
+        print(f'LCStime: {self.clock.now()}')
 
     def run(self):
         self.start_server_thread()

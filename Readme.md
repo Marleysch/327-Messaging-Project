@@ -1,22 +1,24 @@
-## HOW TO RUN
-- run the tcp server first in terminal: python3 IPC/TCPServer.py
 
-## Testing TCP CLIENT
-- usage: python3 IPC/TCPClient.py <message> <host>
-- not typing a host will still work, as the program will just use the default hose
+# How to run?
 
-## Testing API
-- usage: uvicorn RPC_Rest.api:app --reload
-- 2 optons: go to http://127.0.0.1:8000/docs to directly test endpoints (post and get)
-- or use curl
-- Usage: curl -X 'POST' \
-  'http://127.0.0.1:8000/send_message' \
-  -H 'accept: application/json' \
-  -H 'Content-Type: application/json' \
-  -d '{
-  "sender": "string",
-  "content": "string"
-}'
+### For each node in the group
+
+Open 2 terminal windows in CECS-327-proj dir.
+
+In terminal 1, run:
+
+$env:NODE_ID="<node_id#>"
+>> $env:COORD="1"
+>> $env:PEERS="http://<IP of Peer>:<Port of Peer>,..." #For each peer in group
+>> python -m uvicorn coord.two_phase_commit:app --host <IP> --port <port>
+
+In terminal 2, run:
+
+python IPC/p2p_node.py <node_id> <IP>:<port>
+
+
+Messages will be sent and received in the terminal that ran IPC/p2p_node.py
+
 
 ## Testing zero_mq sub_client (pub/sub system)
 - the api is also acting as a publisher via a helper funct.
